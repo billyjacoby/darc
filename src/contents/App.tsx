@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import cssText from "data-text:~/style.css";
 import { KBarProvider, useKBar } from "kbar";
 import type { PlasmoCSConfig } from "plasmo";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SHORTCUT_EVENTS } from "~constants";
 import { CommandPalette } from "./components/command-palette";
 import { useActions } from "./hooks/use-actions";
@@ -20,15 +20,6 @@ export const getStyle = () => {
 	const style = document.createElement("style");
 	style.textContent = cssText;
 
-	const div = document.createElement("div");
-	div.id = "extension-kbar-thing";
-	document.body.appendChild(div);
-
-	// // Create style for portal content
-	const portalStyle = document.createElement("style");
-	portalStyle.textContent = cssText;
-	document.head.appendChild(portalStyle);
-
 	return style;
 };
 
@@ -43,13 +34,12 @@ export const getShadowContainerClassName = async () => {
 function App() {
 	const { mutate: searchHistory, data: history } = useHistory();
 	const { data: activeTabs } = useActiveTabs();
-	console.log("🪵 | App | activeTabs:", activeTabs);
-	const { query, disabled } = useKBar((state) => ({
+	const { query } = useKBar((state) => ({
 		disabled: state.disabled,
 	}));
-
-	console.log("🪵 | const{query,disabled}=useKBar | disabled:", disabled);
 	useActions({ tabs: activeTabs, history, refreshAction: () => {} });
+
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		searchHistory("");
@@ -67,6 +57,7 @@ function App() {
 
 				query.toggle();
 			}
+			_sendResponse({ success: true });
 		};
 
 		// Add the message listener
@@ -78,7 +69,12 @@ function App() {
 		};
 	}, [query]);
 
-	return <CommandPalette />;
+	return (
+		<>
+			<div ref={containerRef} />
+			<CommandPalette containerRef={containerRef} />
+		</>
+	);
 }
 
 const AppWithProviders = () => {

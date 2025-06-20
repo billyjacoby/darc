@@ -70,13 +70,3 @@
   }
 }
  
-@layer base {
-  #plasmo-shadow-container *,
-  .plasmo-portal * {
-    @apply border-border;
-  }
-  #plasmo-shadow-container,
-  .plasmo-portal {
-    @apply bg-background text-foreground;
-  }
-}
