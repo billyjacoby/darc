@@ -7,8 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { SHORTCUT_EVENTS } from "~constants";
 import { CommandPalette } from "./components/command-palette";
 import { useActions } from "./hooks/use-actions";
-import { useActiveTabs } from "./hooks/use-active-tabs";
-import { useHistory } from "./hooks/use-history";
 
 export const config: PlasmoCSConfig = {
 	matches: ["<all_urls>"],
@@ -32,18 +30,14 @@ export const getShadowContainerClassName = async () => {
 };
 
 function App() {
-	const { mutate: searchHistory, data: history } = useHistory();
-	const { data: activeTabs } = useActiveTabs();
 	const { query } = useKBar((state) => ({
 		disabled: state.disabled,
 	}));
-	useActions({ tabs: activeTabs, history, refreshAction: () => {} });
+
+	// Initialize actions (the hook handles registration internally)
+	useActions();
 
 	const containerRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		searchHistory("");
-	}, [searchHistory]);
 
 	useEffect(() => {
 		// Listen for messages from the background script

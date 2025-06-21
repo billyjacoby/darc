@@ -1,7 +1,8 @@
 import type { Action } from "kbar";
 
 // Helper function to safely get hostname from URL
-const getHostname = (url: string) => {
+const getHostname = (url?: string) => {
+	if (!url) return "";
 	try {
 		return new URL(url).hostname;
 	} catch {
@@ -11,47 +12,45 @@ const getHostname = (url: string) => {
 
 export const createHistoryActions = (
 	history?: chrome.history.HistoryItem[],
-	refreshAction?: () => void,
+	refresh?: () => void,
 ): Action[] => {
-	const parentAction: Action = {
-		id: "browser-history",
-		name: "Browser History",
-		shortcut: ["h"],
-		keywords: "history browse recent",
-		section: "Browse",
-		icon: "🕒",
-		subtitle: `Browse recent history (${Math.min(history?.length || 0, 20)} items)`,
-	};
+	const actions: Action[] = [];
 
-	const refreshDataAction: Action = {
-		id: "refresh-data",
-		name: "Refresh History",
-		shortcut: ["r"],
-		keywords: "refresh reload history",
-		section: "Actions",
-		icon: "🔄",
-		perform: refreshAction,
-	};
+	// Add refresh action for debugging/development
+	if (refresh) {
+		actions.push({
+			id: "refresh-history",
+			name: "Refresh History",
+			shortcut: ["r", "h"],
+			keywords: "refresh reload history data",
+			section: "Actions",
+			icon: "🔄",
+			perform: refresh,
+		});
+	}
 
-	const historyItems: Action[] = history?.length
-		? history.slice(0, 20).map((item) => ({
-				id: `history-${item.id}`,
-				name: item.title || "Untitled",
-				subtitle: `${getHostname(item.url || "")} • ${
-					item.lastVisitTime
-						? new Date(item.lastVisitTime).toLocaleString()
-						: "Unknown time"
-				}`,
-				keywords: `${item.title || ""} ${item.url || ""}`,
-				parent: "browser-history",
-				icon: "🕒",
-				perform: () => {
-					if (item.url) {
-						window.open(item.url, "_blank");
-					}
-				},
-			}))
-		: [];
+	if (history?.length) {
+		const historyActions: Action[] = history.slice(0, 20).map((item) => ({
+			id: `history-${item.id}`,
+			name: item.title || "Untitled Page",
+			subtitle: `${getHostname(item.url)} • ${
+				item.lastVisitTime
+					? new Date(item.lastVisitTime).toLocaleDateString()
+					: "Unknown date"
+			}`,
+			keywords: `${item.title || ""} ${item.url || ""} ${getHostname(item.url)} history`,
+			section: "History",
+			icon: "🕒",
+			priority: 50, // Lower priority than recent tabs
+			perform: () => {
+				if (item.url) {
+					window.open(item.url, "_blank");
+				}
+			},
+		}));
 
-	return [parentAction, refreshDataAction, ...historyItems];
+		actions.push(...historyActions);
+	}
+
+	return actions;
 };

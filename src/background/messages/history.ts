@@ -1,28 +1,31 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging";
- 
-const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
-    console.log('🪵 | History handler | Request:', req.body);
+import type {
+	HistoryRequestBody,
+	HistoryResponseBody,
+} from "~types/background/messages/history";
 
-    const body = req.body as {
-        search?: string
-        maxResults?: number
-    }
+const handler: PlasmoMessaging.MessageHandler<
+	HistoryRequestBody,
+	HistoryResponseBody
+> = async (req, res) => {
+	const { body = {} } = req;
+	console.log(
+		"🪵 | consthandler:PlasmoMessaging.MessageHandler<HistoryRequestBody,HistoryResponseBody>= | body:",
+		body,
+	);
 
-    const oneWeekMillis =  7 * 24 * 60 * 60 * 1000;
-    const oneWeekAgo = Date.now() - oneWeekMillis;
+	const oneWeekMillis = 7 * 24 * 60 * 60 * 1000;
+	const oneWeekAgo = Date.now() - oneWeekMillis;
 
-    const history = await chrome.history.search({
-        text: body.search || "",
-        startTime: oneWeekAgo,
-        maxResults: body.maxResults || 100,
-    })
+	const history = await chrome.history.search({
+		text: body.search || "",
+		startTime: oneWeekAgo,
+		maxResults: body.maxResults || 100,
+	});
 
-    console.log('🪵 | History handler | Found items:', history.length);
-    console.log('🪵 | History handler | First item:', history[0]);
- 
-    res.send({
-        history
-    })
-}
- 
-export default handler
+	res.send({
+		history,
+	});
+};
+
+export default handler;
