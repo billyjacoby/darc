@@ -1,5 +1,6 @@
 import type { Action } from "kbar";
 import { useRegisterActions } from "kbar";
+import { Search } from "lucide-react";
 import { useMemo } from "react";
 import { createHistoryActions } from "./actions/history-actions";
 import { createTabActions } from "./actions/tab-actions";
@@ -42,7 +43,7 @@ const createSearchAction = (input: string): Action => ({
 	subtitle: "Search the web using Google",
 	keywords: `${input} search google web`,
 	section: "Search",
-	icon: "🔍",
+	icon: <Search />,
 	priority: 190, // High priority but lower than URL
 	perform: () => {
 		const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(input)}`;

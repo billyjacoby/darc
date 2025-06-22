@@ -7,6 +7,6 @@
 			"~*": ["./src/*"]
 		},
 		"baseUrl": ".",
-		"types": ["chrome"]
+		"types": ["chrome", "node"]
 	}
 }

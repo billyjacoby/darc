@@ -1,4 +1,4 @@
-# Palette Commander: Features for Initial Release
+# Darc: Features for Initial Release
 
 ## Core Functionality
 

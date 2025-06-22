@@ -10,8 +10,6 @@ export function Results() {
 			.slice(0, 4);
 	}, [allResults]);
 
-	console.log("🪵 | results | results:", results);
-
 	return (
 		<KBarResults
 			items={results}
@@ -46,12 +44,12 @@ export function Results() {
 					</div>
 					{item.shortcut?.length ? (
 						<span className="grid grid-flow-col gap-1 flex-shrink-0">
-							{item.shortcut.map((sc) => (
+							{item.shortcut.map((sc, index) => (
 								<kbd
-									key={sc}
-									className="px-1.5 py-0.5 bg-muted text-muted-foreground rounded text-xs font-normal font-system"
+									key={typeof sc === "string" ? sc : `shortcut-${index}`}
+									className="px-1.5 py-0.5 bg-muted text-muted-foreground rounded text-xs font-normal font-system flex items-center gap-1"
 								>
-									{sc}
+									{typeof sc === "string" ? sc : sc}
 								</kbd>
 							))}
 						</span>

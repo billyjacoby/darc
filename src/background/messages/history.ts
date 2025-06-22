@@ -9,10 +9,6 @@ const handler: PlasmoMessaging.MessageHandler<
 	HistoryResponseBody
 > = async (req, res) => {
 	const { body = {} } = req;
-	console.log(
-		"🪵 | consthandler:PlasmoMessaging.MessageHandler<HistoryRequestBody,HistoryResponseBody>= | body:",
-		body,
-	);
 
 	const oneWeekMillis = 7 * 24 * 60 * 60 * 1000;
 	const oneWeekAgo = Date.now() - oneWeekMillis;

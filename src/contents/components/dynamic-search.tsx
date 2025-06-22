@@ -11,10 +11,13 @@ export function DynamicSearch() {
 	useRegisterActions(dynamicActions, [dynamicActions]);
 
 	return (
-		<KBarSearch
-			className="p-3 text-base w-full box-border outline-none border-none m-0 bg-popover text-popover-foreground border-b border-border/10"
-			placeholder="Type a command or search..."
-			onChange={(e) => setQuery(e.target.value)}
-		/>
+		<div className="flex flex-row items-center p-3 gap-2">
+			<div className="w-4 h-4 rounded-full bg-red-500" />
+			<KBarSearch
+				className="text-base w-full box-border outline-none border-none m-0 bg-popover text-popover-foreground border-b border-border/10"
+				placeholder="Search or enter a URL..."
+				onChange={(e) => setQuery(e.target.value)}
+			/>
+		</div>
 	);
 }

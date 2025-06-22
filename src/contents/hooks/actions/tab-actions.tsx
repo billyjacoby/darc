@@ -1,9 +1,12 @@
 import { sendToBackground } from "@plasmohq/messaging";
 import type { Action } from "kbar";
+import { ActionImageForUrl } from "~contents/components/action-image-for-url";
+import { TabSwitchShortcut } from "~contents/components/tab-switch-shortcut";
 import type {
 	SwitchTabRequestBody,
 	SwitchTabResponseBody,
 } from "~types/background/messages/switch-tab";
+import type { ExtendedAction } from "~types/kbar-extend";
 
 // Helper function to safely get hostname from URL
 const getHostname = (url?: string) => {
@@ -22,16 +25,17 @@ export const createTabActions = (tabs?: chrome.tabs.Tab[]): Action[] => {
 
 	// ? Don't show the currently active tab
 
-	const tabActions: Action[] = tabs
+	const tabActions: ExtendedAction[] = tabs
 		.filter((tab) => !tab.active)
-		.map((tab, index) => ({
+		.map((tab) => ({
 			id: `tab-${tab.id}`,
 			name: tab.title || "Untitled Tab",
 			subtitle: getHostname(tab.url),
 			keywords: `${tab.title || ""} ${tab.url || ""} tab switch`,
 			section: "Recent Tabs",
-			icon: "🗂️",
-			priority: 100 - index, // Higher priority for more recent tabs
+			icon: <ActionImageForUrl url={tab.url || ""} />,
+			shortcut: [<TabSwitchShortcut key={`shortcut-${tab.id}`} />],
+			priority: 100, // Higher priority for more recent tabs
 			perform: async () => {
 				try {
 					if (!tab.id) {
@@ -56,5 +60,6 @@ export const createTabActions = (tabs?: chrome.tabs.Tab[]): Action[] => {
 			},
 		}));
 
-	return tabActions;
+	// Type assertion to satisfy kbar's Action[] return type
+	return tabActions as Action[];
 };

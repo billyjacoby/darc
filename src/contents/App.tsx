@@ -47,8 +47,6 @@ function App() {
 			_sendResponse: (response?: any) => void,
 		) => {
 			if (message.type === SHORTCUT_EVENTS.OPEN_PALETTE.type) {
-				console.log("Toggle sidebar message received at:", message.triggeredAt);
-
 				query.toggle();
 			}
 			_sendResponse({ success: true });
@@ -79,20 +77,12 @@ const AppWithProviders = () => {
 				options={{
 					disableScrollbarManagement: true,
 					disableDocumentLock: true,
-					// Disable default keyboard shortcuts
-					callbacks: {
-						onOpen: () => {
-							console.log("onOpen");
-						},
-						onClose: () => {
-							console.log("onClose");
-						},
-					},
 					enableHistory: true,
 					animations: {
 						enterMs: 200,
 						exitMs: 100,
 					},
+					// Disable default keyboard shortcuts
 					toggleShortcut: "ignoreme",
 				}}
 			>

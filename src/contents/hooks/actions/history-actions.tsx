@@ -1,4 +1,5 @@
 import type { Action } from "kbar";
+import { ActionImageForUrl } from "~contents/components/action-image-for-url";
 
 // Helper function to safely get hostname from URL
 const getHostname = (url?: string) => {
@@ -40,7 +41,7 @@ export const createHistoryActions = (
 			}`,
 			keywords: `${item.title || ""} ${item.url || ""} ${getHostname(item.url)} history`,
 			section: "History",
-			icon: "🕒",
+			icon: <ActionImageForUrl url={item.url} />,
 			priority: 50, // Lower priority than recent tabs
 			perform: () => {
 				if (item.url) {

@@ -1,13 +1,13 @@
 {
-	"name": "palette-commander",
-	"displayName": "Palette commander",
+	"name": "darc",
+	"displayName": "Darc",
 	"version": "0.0.1",
 	"description": "Command palette",
 	"author": "Billy Jacoby",
 	"scripts": {
-		"dev": "plasmo dev",
-		"build": "plasmo build",
-		"package": "plasmo package",
+		"dev": "dotenv -e .env -- plasmo dev",
+		"build": "dotenv -e .env -- plasmo build",
+		"package": "dotenv -e .env -- plasmo package",
 		"type-check": "tsc --noEmit",
 		"lint": "biome check"
 	},
@@ -16,6 +16,7 @@
 		"@plasmohq/storage": "^1.15.0",
 		"@tanstack/react-query": "^5.80.10",
 		"kbar": "0.1.0-beta.45",
+		"lucide-react": "^0.522.0",
 		"plasmo": "0.90.5",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
@@ -28,13 +29,15 @@
 		"@types/react": "18.2.48",
 		"@types/react-dom": "18.2.18",
 		"autoprefixer": "^10.4.21",
+		"dotenv": "^16.5.0",
+		"dotenv-cli": "^8.0.0",
 		"postcss": "^8.5.6",
 		"prettier": "3.2.4",
 		"tailwindcss": "^3.4.17",
 		"typescript": "5.3.3"
 	},
 	"manifest": {
-		"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv5s8vQX60PgumXLR0nMqrBtWFL+04hmvJ7KAyXkoUEJWfZL7jP6R6W6dlIRDBM+vzp6ZLmGR/75Qeup2+rhqFmKgfvTgcmnYY+uNyVW4nZCRJBBPlZMqvB3FZbIWEF7bQDHR4W/Hi0wb5sEv8DwHCPMybY99JAKIzEFkmKNVp8yxARIAA7zduCfOfXBCpXXeeE5UoqRPWBVwiT8yyu0pQpD3nuM2+Ay4p34k8FCd9Hwc3A/bYtj3d/D55hK1liasSPGqmpDgwHN7kou0Kcr59zRFyDf/lc6M4kJDmKsh0zwM3HSd8iojfyGpGqBDczPv3VfsavbWfRMFDcY9iQZ1ywIDAQAB",
+		"key": "$CRX_KEY",
 		"host_permissions": [
 			"https://*/*"
 		],

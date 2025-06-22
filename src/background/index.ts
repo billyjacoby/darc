@@ -1,7 +1,5 @@
 import { SHORTCUT_EVENTS } from "../constants";
 
-console.log("Background script loaded!");
-
 chrome.commands.onCommand.addListener((command) => {
 	const eventTime = new Date().toISOString();
 	chrome.storage.local.set({
