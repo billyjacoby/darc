@@ -3,10 +3,12 @@ import { useRegisterActions } from "kbar";
 import { Search } from "lucide-react";
 import { useMemo } from "react";
 import { createHistoryActions } from "./actions/history-actions";
+import { createPositionActions } from "./actions/position-actions";
 import { createTabActions } from "./actions/tab-actions";
 import { createThemeActions } from "./actions/theme-actions";
 import { useActiveTabs } from "./queries/use-active-tabs";
 import { useHistory } from "./queries/use-history";
+import { usePalettePosition } from "./use-palette-position";
 import { useTheme } from "./use-theme";
 
 // Helper function to detect if input resembles a URL
@@ -57,15 +59,22 @@ export const useActions = () => {
 	const { data: history, refetch: refetchHistory } = useHistory();
 	const { data: tabs } = useActiveTabs();
 	const { theme, toggleTheme } = useTheme();
+	const { resetPosition } = usePalettePosition();
 
 	const themeActions = createThemeActions(theme, toggleTheme);
+	const positionActions = createPositionActions(resetPosition);
 
 	const actions = useMemo(() => {
 		const historyActions = createHistoryActions(history, refetchHistory);
 		const tabActions = createTabActions(tabs);
 
-		return [...tabActions, ...historyActions, ...themeActions];
-	}, [tabs, history, refetchHistory, themeActions]);
+		return [
+			...tabActions,
+			...historyActions,
+			...themeActions,
+			...positionActions,
+		];
+	}, [tabs, history, refetchHistory, themeActions, positionActions]);
 
 	useRegisterActions(actions, [actions]);
 
