@@ -4,8 +4,10 @@ import { Search } from "lucide-react";
 import { useMemo } from "react";
 import { createHistoryActions } from "./actions/history-actions";
 import { createTabActions } from "./actions/tab-actions";
+import { createThemeActions } from "./actions/theme-actions";
 import { useActiveTabs } from "./queries/use-active-tabs";
 import { useHistory } from "./queries/use-history";
+import { useTheme } from "./use-theme";
 
 // Helper function to detect if input resembles a URL
 const isUrlLike = (input: string): boolean => {
@@ -54,13 +56,16 @@ const createSearchAction = (input: string): Action => ({
 export const useActions = () => {
 	const { data: history, refetch: refetchHistory } = useHistory();
 	const { data: tabs } = useActiveTabs();
+	const { theme, toggleTheme } = useTheme();
+
+	const themeActions = createThemeActions(theme, toggleTheme);
 
 	const actions = useMemo(() => {
 		const historyActions = createHistoryActions(history, refetchHistory);
 		const tabActions = createTabActions(tabs);
 
-		return [...tabActions, ...historyActions];
-	}, [tabs, history, refetchHistory]);
+		return [...tabActions, ...historyActions, ...themeActions];
+	}, [tabs, history, refetchHistory, themeActions]);
 
 	useRegisterActions(actions, [actions]);
 
