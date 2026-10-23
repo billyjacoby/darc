@@ -1,54 +1,58 @@
-# Darc - Chrome Extension Command Palette
+# Darc - Browser Command Palette
 
-Darc is a powerful Chrome extension that brings a familiar command palette to your browser, enabling quick navigation and enhanced productivity through keyboard shortcuts.
+Darc brings a keyboard-first command palette to your browser. Press one shortcut on any page and search everything in your browser from a single box.
 
 ## What Darc Currently Supports
 
 ### 🎯 Core Features
 
-- **Command Palette Interface**: Clean, minimal UI with smooth animations activated by `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
-- **Keyboard-First Navigation**: Full keyboard support with arrow keys and enter for selection
+- **Command Palette Anywhere**: Opens with `Cmd+Shift+P` (`Ctrl+Shift+P` on Windows/Linux), rebindable to any shortcut (e.g. `Cmd+T`), or with the toolbar button
+  - On regular pages it appears as an overlay on the page
+  - On browser pages where extensions can't run (settings, the web store) it opens in a small window of its own
+- **New Tab Page**: Replaces the new tab page with a blank page that has the palette open
+- **Keyboard-First Navigation**: Arrow keys and Enter, with `Tab` or `→` to accept an address completion
+- **Focus Protection**: While the palette is open, the page's own keyboard shortcuts can't take focus from it
 
-### 📑 Tab Management
+### 📑 Tabs, History & Bookmarks
 
-- **Recent Tab Display**: Shows 4 most recently active tabs when palette opens
-- **Quick Tab Switching**: Switch between open tabs with keyboard or click
-- **Tab Search**: Search across all open tabs by title and URL
-- **Smart Tab Filtering**: Excludes currently active tab from results
+- **Tab Switching**: Search open tabs by title and URL and switch to them
+- **History Search**: Search the last week of browsing history
+- **Bookmark Search**: Search bookmark titles and URLs
 
-### 📚 Browsing History Integration
+### 🔗 Addresses & Search
 
-- **History Search**: Search through browsing history as you type
-- **Intelligent Results**: Display matching history items by relevance
-- **Quick Access**: Open history items in current or new tab
-- **Visual Context**: Shows hostname and last visit date for each result
+- **Address Completion**: Completes addresses as you type (shown as faded text), using your most visited sites, your history, and a list of popular sites
+- **Local Addresses**: `localhost:3000`, `app.localhost`, and IP addresses open over `http://` without typing it, and ports are remembered
+- **Direct Navigation**: Any address, including `brave://` and `chrome://` pages
+- **Web Search**: Search Google for any text
 
-### 🔗 URL & Web Search
+### ⚙️ Browser Actions
 
-- **Smart URL Detection**: Automatically detects when input resembles a URL
-- **Direct Navigation**: Navigate directly to entered URLs
-- **Web Search Integration**: Search the web using Google for any text input
-- **Dynamic Actions**: URL and search options appear contextually based on input
+- **Browser Settings**: Jump to any settings page (privacy, cookies, extensions, shortcuts, flags, ...), or type `settings <words>` to search settings
+- **Copy Link**: Copy the current page's URL
 
-### 🎨 User Experience
+### 🎨 Preferences
 
-- **Responsive Design**: Works across different window sizes
-- **Visual Feedback**: Clear indication of selected items with favicons
-- **Smooth Animations**: 200ms enter, 100ms exit animations
-- **Focus Management**: Auto-focuses search input when opened
+- **Settings Page**: Adjustable font size, with more settings to come
+- **Themes**: Light and dark
+- **Draggable Palette**: Drag it anywhere on screen; it snaps back to center when dragged near it
+
+### 🔒 Privacy
+
+Everything runs locally: no servers, no analytics. Store builds are added to a page only when you open the palette there, so they don't need access to every site. See [PRIVACY.md](PRIVACY.md).
 
 ## Short-Term Goals
 
 - [ ] **Enhanced Search Engine Support**: Add Bing and DuckDuckGo options alongside Google
 - [ ] **DuckDuckGo Operator Support**: Add support for DuckDuckGo's ! search syntax
 - [ ] **UI Polish**: Complete the clean, minimal aesthetic improvements
-- [ ] **Cross-Browser Compatibility**: Ensure full compatibility with all Chromium-based browsers
+- [ ] **Firefox Support**: Port the APIs that differ (script injection, the palette window, browser pages)
 - [ ] **Performance Optimization**: Minimize extension impact on browser performance
 
 ## 🔮 Future Enhancements
 
 - [ ] **User Customization**: Allow users to customize shortcuts and behavior
-- [ ] **Bookmark Integration**: Search and navigate bookmarks
+- [x] **Bookmark Integration**: Search and navigate bookmarks
 - [ ] **Additional Command Types**: Extend beyond navigation (page actions, developer tools, etc.)
 - [ ] **Extension Shortcuts**: Quick access to other installed extensions
 
@@ -58,7 +62,7 @@ Darc is a powerful Chrome extension that brings a familiar command palette to yo
 
 - Node.js
 - pnpm (recommended) or npm
-- Chrome or Chromium-based browser
+- Chrome or another Chromium-based browser (Brave, Arc, Edge, ...)
 
 ### Installation & Setup
 
@@ -70,13 +74,18 @@ Darc is a powerful Chrome extension that brings a familiar command palette to yo
    pnpm install
    ```
 
-3. **Set up environment variables**
-   Create a `.env` file in the root directory:
+3. **Set up environment variables** (optional)
+   Copy `.env.example` to `.env`. Both variables are optional:
 
    ```bash
-   # Required for the extension to work
-   PLASMO_PUBLIC_CHROME_EXTENSION_ID=your-extension-id-here
-   CRX_KEY=your-crx-key-here
+   # Silence console output in every build
+   PLASMO_PUBLIC_DISABLE_LOGS=true
+   ```
+
+   To keep the unpacked extension's ID stable across reloads and machines, put your manifest key in `.env.development` (dev builds only; store builds must not include a key):
+
+   ```bash
+   CRX_KEY=your-base64-public-key
    ```
 
 4. **Start development server**
@@ -85,19 +94,29 @@ Darc is a powerful Chrome extension that brings a familiar command palette to yo
    pnpm dev
    ```
 
-5. **Load the extension in Chrome**
-   - Open Chrome and navigate to `chrome://extensions/`
+5. **Load the extension**
+   - Navigate to `chrome://extensions/` (or `brave://extensions/`)
    - Enable "Developer mode" in the top right
    - Click "Load unpacked" and select the `build/chrome-mv3-dev` directory
-   - The extension should now be loaded and ready to use!
+   - Optionally rebind the shortcut at `chrome://extensions/shortcuts`
+
+   Dev builds load the palette into every page up front. To try the store behavior instead (added to a page only when opened), run `pnpm build` and load `build/chrome-mv3-prod`.
 
 ### Usage
 
-1. **Open Command Palette**: Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
+1. **Open Command Palette**: Press your shortcut or click the toolbar button
 2. **Navigate**: Use arrow keys to move between options
 3. **Select**: Press Enter to execute the selected action
-4. **Search**: Start typing to search tabs, history, or URLs
-5. **Toggle Theme**: Press `t` while the palette is open to switch themes
+4. **Search**: Start typing to search tabs, history, bookmarks, settings, or open an address
+5. **Settings**: Right-click the toolbar button → Options
+
+## Publishing
+
+```bash
+pnpm package
+```
+
+Produces `build/chrome-mv3-prod.zip` for the Chrome Web Store and Edge Add-ons. Listing copy, permission justifications, and the asset checklist are in [store/LISTING.md](store/LISTING.md).
 
 ## Technical Stack
 
@@ -111,13 +130,13 @@ Darc is a powerful Chrome extension that brings a familiar command palette to yo
 
 ## Browser Permissions
 
-The extension requires the following permissions:
-
-- `tabs` - To list and switch between browser tabs
-- `history` - To search browsing history
-- `storage` - To save user preferences and settings
-- `commands` - To register keyboard shortcuts
-- `host_permissions` - To work across all websites
+- `tabs` - To list, switch to, and open tabs
+- `history` - To search browsing history and suggest addresses
+- `bookmarks` - To search bookmarks
+- `topSites` - To rank address suggestions
+- `storage` - To save settings
+- `activeTab` + `scripting` - To add the palette to the current page when you open it
+- `favicon` - To show site icons from the browser's own cache
 
 ## Contributing
 

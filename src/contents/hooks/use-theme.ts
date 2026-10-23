@@ -53,8 +53,6 @@ export function useTheme() {
 		globalTheme.theme = newTheme; // This will trigger the proxy
 	}, [theme]);
 
-	console.log("🪵 | useTheme | theme:", theme);
-
 	return { theme, toggleTheme };
 }
 

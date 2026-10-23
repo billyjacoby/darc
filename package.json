@@ -1,13 +1,15 @@
 {
 	"name": "darc",
 	"displayName": "Darc",
-	"version": "0.0.1",
-	"description": "Command palette",
+	"version": "0.1.0",
+	"description": "A keyboard-first command palette for your browser. Search tabs, history, bookmarks, and settings, or open any site.",
 	"author": "Billy Jacoby",
 	"scripts": {
-		"dev": "dotenv -e .env -- plasmo dev",
-		"build": "dotenv -e .env -- plasmo build",
-		"package": "dotenv -e .env -- plasmo package",
+		"dev": "dotenv -e .env -e .env.development -- plasmo dev",
+		"build": "dotenv -e .env -- plasmo build && node scripts/on-demand-content-scripts.mjs build/chrome-mv3-prod",
+		"build:firefox": "dotenv -e .env -- plasmo build --target=firefox-mv2",
+		"build:safari": "dotenv -e .env -- plasmo build --target=safari-mv3",
+		"package": "dotenv -e .env -- plasmo build && node scripts/on-demand-content-scripts.mjs build/chrome-mv3-prod && dotenv -e .env -- plasmo package",
 		"type-check": "tsc --noEmit",
 		"lint": "biome check"
 	},
@@ -37,15 +39,31 @@
 		"typescript": "5.3.3"
 	},
 	"manifest": {
+		"browser_specific_settings": {
+			"gecko": {
+				"id": "darc@billyjacoby.dev"
+			}
+		},
 		"key": "$CRX_KEY",
-		"host_permissions": [
-			"https://*/*"
-		],
 		"permissions": [
 			"tabs",
-			"commands",
 			"storage",
-			"history"
+			"history",
+			"topSites",
+			"scripting",
+			"activeTab",
+			"bookmarks",
+			"favicon"
+		],
+		"web_accessible_resources": [
+			{
+				"resources": [
+					"_favicon/*"
+				],
+				"matches": [
+					"<all_urls>"
+				]
+			}
 		],
 		"commands": {
 			"open_palette": {

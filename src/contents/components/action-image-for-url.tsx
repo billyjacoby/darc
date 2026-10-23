@@ -1,13 +1,22 @@
 import { Globe } from "lucide-react";
 
-export const ActionImageForUrl = ({ url }: { url: string }) => {
-	const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(url)}&size=512`;
+// The browser's own favicon cache (the "favicon" permission), so no visited
+// URLs are sent to a third-party favicon service
+const faviconUrl = (url: string) =>
+	chrome.runtime.getURL(
+		`/_favicon/?pageUrl=${encodeURIComponent(url)}&size=32`,
+	);
 
+export const ActionImageForUrl = ({ url }: { url: string }) => {
 	if (!url) {
 		return <Globe />;
 	}
 
 	return (
-		<img src={iconUrl} alt="Action" style={{ height: "20px", width: "20px" }} />
+		<img
+			src={faviconUrl(url)}
+			alt="Action"
+			style={{ height: "20px", width: "20px" }}
+		/>
 	);
 };

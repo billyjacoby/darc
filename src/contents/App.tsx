@@ -1,10 +1,11 @@
+import "~utils/disable-logs";
+import cssText from "data-text:~/style.css";
 import { Storage } from "@plasmohq/storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import cssText from "data-text:~/style.css";
-import { KBarProvider, useKBar } from "kbar";
+import { KBarProvider, useKBar, VisualState } from "kbar";
 import type { PlasmoCSConfig } from "plasmo";
 import { useEffect, useRef, useState } from "react";
-import { SHORTCUT_EVENTS } from "~constants";
+import { KBAR_OPTIONS, SHORTCUT_EVENTS } from "~constants";
 import { CommandPalette } from "./components/command-palette";
 import { useActions } from "./hooks/use-actions";
 
@@ -29,7 +30,12 @@ export const getShadowContainerClassName = async () => {
 	return theme;
 };
 
-function App() {
+interface AppProps {
+	// Show the palette as soon as it mounts (used by the new tab page)
+	openOnMount?: boolean;
+}
+
+function App({ openOnMount }: AppProps) {
 	const { query } = useKBar((state) => ({
 		disabled: state.disabled,
 	}));
@@ -38,14 +44,30 @@ function App() {
 	useActions();
 
 	const containerRef = useRef<HTMLDivElement>(null);
+	// Only known in extension pages; content scripts can't use chrome.tabs
+	const tabIdRef = useRef<number>();
+
+	useEffect(() => {
+		chrome.tabs?.getCurrent((tab) => {
+			tabIdRef.current = tab?.id;
+		});
+	}, []);
+
+	useEffect(() => {
+		if (openOnMount) query.setVisualState(VisualState.animatingIn);
+	}, [openOnMount, query]);
 
 	useEffect(() => {
 		// Listen for messages from the background script
 		const handleMessage = (
-			message: any,
+			message: { type?: string; tabId?: number },
 			_sender: chrome.runtime.MessageSender,
-			_sendResponse: (response?: any) => void,
+			_sendResponse: (response?: unknown) => void,
 		) => {
+			// Messages broadcast to extension pages name the tab they're for
+			if (message.tabId !== undefined && message.tabId !== tabIdRef.current) {
+				return;
+			}
 			if (message.type === SHORTCUT_EVENTS.OPEN_PALETTE.type) {
 				query.toggle();
 			}
@@ -69,24 +91,12 @@ function App() {
 	);
 }
 
-const AppWithProviders = () => {
+export const AppWithProviders = (props: AppProps) => {
 	const [queryClient] = useState(new QueryClient());
 	return (
 		<QueryClientProvider client={queryClient}>
-			<KBarProvider
-				options={{
-					disableScrollbarManagement: true,
-					disableDocumentLock: true,
-					enableHistory: true,
-					animations: {
-						enterMs: 200,
-						exitMs: 100,
-					},
-					// Disable default keyboard shortcuts
-					toggleShortcut: "ignoreme",
-				}}
-			>
-				<App />
+			<KBarProvider options={KBAR_OPTIONS}>
+				<App openOnMount={props.openOnMount} />
 			</KBarProvider>
 		</QueryClientProvider>
 	);

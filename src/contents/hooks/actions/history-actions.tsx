@@ -1,5 +1,6 @@
 import type { Action } from "kbar";
 import { ActionImageForUrl } from "~contents/components/action-image-for-url";
+import { openUrl } from "~utils/open-url";
 
 // Helper function to safely get hostname from URL
 const getHostname = (url?: string) => {
@@ -13,22 +14,8 @@ const getHostname = (url?: string) => {
 
 export const createHistoryActions = (
 	history?: chrome.history.HistoryItem[],
-	refresh?: () => void,
 ): Action[] => {
 	const actions: Action[] = [];
-
-	// Add refresh action for debugging/development
-	if (refresh) {
-		actions.push({
-			id: "refresh-history",
-			name: "Refresh History",
-			shortcut: ["r", "h"],
-			keywords: "refresh reload history data",
-			section: "Actions",
-			icon: "🔄",
-			perform: refresh,
-		});
-	}
 
 	if (history?.length) {
 		const historyActions: Action[] = history.slice(0, 20).map((item) => ({
@@ -45,7 +32,7 @@ export const createHistoryActions = (
 			priority: 50, // Lower priority than recent tabs
 			perform: () => {
 				if (item.url) {
-					window.open(item.url, "_blank");
+					openUrl(item.url);
 				}
 			},
 		}));
