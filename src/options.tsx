@@ -18,7 +18,7 @@ function Options() {
 			className={`darc-settings ${theme} min-h-screen bg-background text-foreground font-sans`}
 		>
 			<main className="max-w-xl mx-auto px-6 py-10 flex flex-col gap-8">
-				<h1 className="text-2xl font-semibold">Darc Settings</h1>
+				<h1 className="text-2xl font-semibold">dArc Settings</h1>
 
 				<section className="flex flex-col gap-3">
 					<div className="flex items-center justify-between">

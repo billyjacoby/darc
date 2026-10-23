@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+	<!-- dArc icon: a lowercase "d" made of an arc (bowl) and a text cursor (stem).
+	     Art sits in the middle 384px, leaving the 1/8 padding Chrome's icon guidelines ask for. -->
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#2a1d52"/>
+			<stop offset="1" stop-color="#0c0a14"/>
+		</linearGradient>
+		<radialGradient id="glow" cx="0.78" cy="0.18" r="0.8">
+			<stop offset="0" stop-color="#8b5cf6" stop-opacity="0.55"/>
+			<stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+		</radialGradient>
+		<linearGradient id="arc" x1="0" y1="0" x2="0.4" y2="1">
+			<stop offset="0" stop-color="#ddd6fe"/>
+			<stop offset="0.5" stop-color="#a78bfa"/>
+			<stop offset="1" stop-color="#7c3aed"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="64" y="64" width="384" height="384" rx="96" fill="url(#bg)"/>
+	<rect x="64" y="64" width="384" height="384" rx="96" fill="url(#glow)"/>
+	<rect x="65.5" y="65.5" width="381" height="381" rx="94.5" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="3"/>
+
+	<!-- Arc bowl, opening toward the stem -->
+	<path d="M 270 224 A 80 80 0 0 0 270 384" fill="none" stroke="url(#arc)" stroke-width="40" stroke-linecap="round"/>
+	<!-- Cursor stem, rising above the bowl like a "d" ascender -->
+	<rect x="302" y="116" width="40" height="288" rx="20" fill="#fafafa"/>
+</svg>

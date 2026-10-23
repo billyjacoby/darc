@@ -12,7 +12,7 @@ This builds the store version, stops it from loading on every site (it's added t
 
 ## Listing
 
-**Name:** Darc
+**Name:** dArc
 
 **Summary** (from the manifest, 132 characters max):
 
@@ -22,11 +22,11 @@ This builds the store version, stops it from loading on every site (it's added t
 
 **Description:**
 
-> Darc puts one search bar in front of everything in your browser. Press a shortcut on any page and start typing.
+> dArc puts one search bar in front of everything in your browser. Press a shortcut on any page and start typing.
 >
 > • Switch to an open tab
 > • Find a page in your history or bookmarks
-> • Type a site and press Enter. Darc completes addresses you visit often.
+> • Type a site and press Enter. dArc completes addresses you visit often.
 > • Open localhost and local network addresses without typing http://, with ports remembered
 > • Jump to any browser settings page, or search settings with "settings <words>"
 > • Search the web
@@ -34,9 +34,9 @@ This builds the store version, stops it from loading on every site (it's added t
 >
 > It works everywhere, including browser settings pages and the new tab page. The palette can be dragged anywhere on screen and stays where you leave it. There are light and dark themes and an adjustable text size.
 >
-> Darc replaces the new tab page with a blank page that has the palette open.
+> dArc replaces the new tab page with a blank page that has the palette open.
 >
-> Private by design: everything happens on your device. Darc has no servers and no analytics, and doesn't collect anything.
+> Private by design: everything happens on your device. dArc has no servers and no analytics, and doesn't collect anything.
 >
 > Set your shortcut at chrome://extensions/shortcuts (or brave://extensions/shortcuts).
 
@@ -44,7 +44,7 @@ This builds the store version, stops it from loading on every site (it's added t
 
 ## Single purpose
 
-> Darc is a command palette: a single keyboard-driven search box for navigating the browser, covering tabs, history, bookmarks, sites, and browser settings. The new tab page override shows the same palette.
+> dArc is a command palette: a single keyboard-driven search box for navigating the browser, covering tabs, history, bookmarks, sites, and browser settings. The new tab page override shows the same palette.
 
 ## Permission justifications
 
@@ -55,7 +55,7 @@ This builds the store version, stops it from loading on every site (it's added t
 | `bookmarks` | Searches the user's bookmarks for results. |
 | `topSites` | Ranks address suggestions by the sites the user visits most. |
 | `storage` | Saves the extension's own settings (theme, font size, palette position). |
-| `activeTab` | When the user presses the shortcut or clicks the toolbar button, lets Darc add the palette to the current page. |
+| `activeTab` | When the user presses the shortcut or clicks the toolbar button, lets dArc add the palette to the current page. |
 | `scripting` | Adds the palette's script to the current page when the user opens it, instead of running on every site. |
 | `favicon` | Shows website icons in results from the browser's own icon cache, so no addresses are sent to an outside icon service. |
 
@@ -63,7 +63,7 @@ This builds the store version, stops it from loading on every site (it's added t
 
 ## Data usage disclosures
 
-**Data collected:** none. In the dashboard, tick **Web history** only if the form asks about data the extension handles. Darc reads history, tabs, and bookmarks on the device to show results, but never sends or stores them.
+**Data collected:** none. In the dashboard, tick **Web history** only if the form asks about data the extension handles. dArc reads history, tabs, and bookmarks on the device to show results, but never sends or stores them.
 
 Certify all three:
 - Not sold or transferred to third parties
@@ -72,7 +72,7 @@ Certify all three:
 
 ## New tab page
 
-Darc overrides the new tab page. The description above says so, which store policy requires. Browsers also ask users whether to keep the change.
+dArc overrides the new tab page. The description above says so, which store policy requires. Browsers also ask users whether to keep the change.
 
 ## Assets
 

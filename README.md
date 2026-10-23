@@ -1,8 +1,8 @@
-# Darc - Browser Command Palette
+# dArc - Browser Command Palette
 
-Darc brings a keyboard-first command palette to your browser. Press one shortcut on any page and search everything in your browser from a single box.
+dArc brings a keyboard-first command palette to your browser. Press one shortcut on any page and search everything in your browser from a single box.
 
-## What Darc Currently Supports
+## What dArc Currently Supports
 
 ### 🎯 Core Features
 

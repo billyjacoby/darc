@@ -32,7 +32,7 @@ function PaletteWindow() {
 
 	// kbar starts hidden, so show it as soon as the window opens
 	useEffect(() => {
-		document.title = "Darc";
+		document.title = "dArc";
 		query.setVisualState(VisualState.animatingIn);
 	}, [query]);
 
