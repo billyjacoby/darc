@@ -73,10 +73,6 @@ export function CommandPalette({
 		offsetY: number;
 	} | null>(null);
 
-	useEffect(() => {
-		console.log("theme", theme);
-	}, [theme]);
-
 	const handleMouseDown = (e: React.MouseEvent) => {
 		// Only start dragging on left click
 		if (e.button !== 0) return;

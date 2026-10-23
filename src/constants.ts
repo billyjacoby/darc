@@ -18,6 +18,9 @@ export const PALETTE_WINDOW = {
 
 export const NEW_TAB_PATH = "newtab.html";
 
+// Written by scripts/on-demand-content-scripts.mjs in store builds
+export const CONTENT_SCRIPTS_FILE = "content-scripts.json";
+
 export const KBAR_OPTIONS: KBarOptions = {
 	disableScrollbarManagement: true,
 	disableDocumentLock: true,

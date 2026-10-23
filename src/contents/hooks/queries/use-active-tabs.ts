@@ -5,10 +5,6 @@ import type {
 	ActiveTabsResponseBody,
 } from "~types/background/messages/active-tabs";
 
-if (!process.env.PLASMO_PUBLIC_CHROME_EXTENSION_ID) {
-	throw new Error("PLASMO_PUBLIC_CHROME_EXTENSION_ID is not set");
-}
-
 const activeTabsQueryOptions = queryOptions<
 	ActiveTabsResponseBody["activeTabs"]
 >({
@@ -19,7 +15,6 @@ const activeTabsQueryOptions = queryOptions<
 			ActiveTabsResponseBody
 		>({
 			name: "active-tabs",
-			extensionId: process.env.PLASMO_PUBLIC_CHROME_EXTENSION_ID,
 		});
 
 		if (!response.activeTabs) {

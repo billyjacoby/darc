@@ -8,7 +8,6 @@ export const createThemeActions = (
 	{
 		id: "theme",
 		name: "Toggle Theme",
-		shortcut: ["t"],
 		keywords: "theme dark light toggle appearance",
 		section: "Preferences",
 		icon: theme === "dark" ? "🌙" : "☀️",

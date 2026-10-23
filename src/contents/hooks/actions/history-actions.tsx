@@ -14,22 +14,8 @@ const getHostname = (url?: string) => {
 
 export const createHistoryActions = (
 	history?: chrome.history.HistoryItem[],
-	refresh?: () => void,
 ): Action[] => {
 	const actions: Action[] = [];
-
-	// Add refresh action for debugging/development
-	if (refresh) {
-		actions.push({
-			id: "refresh-history",
-			name: "Refresh History",
-			shortcut: ["r", "h"],
-			keywords: "refresh reload history data",
-			section: "Actions",
-			icon: "🔄",
-			perform: refresh,
-		});
-	}
 
 	if (history?.length) {
 		const historyActions: Action[] = history.slice(0, 20).map((item) => ({

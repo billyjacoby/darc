@@ -1,9 +1,31 @@
 import "~utils/disable-logs";
-import { NEW_TAB_PATH, PALETTE_WINDOW, SHORTCUT_EVENTS } from "../constants";
+import {
+	CONTENT_SCRIPTS_FILE,
+	NEW_TAB_PATH,
+	PALETTE_WINDOW,
+	SHORTCUT_EVENTS,
+} from "../constants";
 
 // How long to wait for an injected content script to start listening
 const INJECT_RETRY_MS = 50;
 const INJECT_MAX_RETRIES = 20;
+
+// Dev builds declare content scripts, so every page gets the palette up front.
+// Store builds don't (see scripts/on-demand-content-scripts.mjs) and list
+// the files to inject when the palette is first opened in a tab instead.
+const declaredContentScripts =
+	chrome.runtime
+		.getManifest()
+		.content_scripts?.flatMap((script) => script.js ?? []) ?? [];
+
+const getContentScriptFiles = async (): Promise<string[]> => {
+	if (declaredContentScripts.length) return declaredContentScripts;
+	const response = await fetch(chrome.runtime.getURL(CONTENT_SCRIPTS_FILE));
+	return response.json();
+};
+
+// Tabs being injected into, so a quick second press doesn't inject twice
+const injectingTabIds = new Set<number>();
 
 const paletteWindowUrl = () => chrome.runtime.getURL(PALETTE_WINDOW.PATH);
 
@@ -19,14 +41,7 @@ const findPaletteWindow = async () => {
 
 const sendToggleMessage = async (tabId: number, type: string) => {
 	try {
-		const response = await chrome.tabs.sendMessage(tabId, {
-			type,
-			triggeredAt: new Date().toISOString(),
-		});
-		chrome.storage.local.set({
-			lastMessageResponse: response,
-			responseTime: new Date().toISOString(),
-		});
+		await chrome.tabs.sendMessage(tabId, { type });
 		return true;
 	} catch {
 		// No content script listening in this tab
@@ -34,31 +49,35 @@ const sendToggleMessage = async (tabId: number, type: string) => {
 	}
 };
 
-// Tabs opened before the extension (re)loaded have no live content script, so
-// add one now. activeTab, granted by the keyboard shortcut, permits this on
-// any web page.
+// Add the palette to a tab that has no live content script: every tab in
+// store builds, or tabs opened before the extension (re)loaded in dev.
+// activeTab, granted by the shortcut or toolbar button, permits this on any
+// web page.
 const injectAndToggle = async (tab: chrome.tabs.Tab, type: string) => {
-	// A tab that's still loading gets its content script soon, and injecting
-	// now as well would leave two palettes in the page
-	if (!tab.id || tab.status !== "complete") return false;
+	if (!tab.id) return false;
+	const tabId = tab.id;
+	if (injectingTabIds.has(tabId)) return true;
 
-	const files =
-		chrome.runtime
-			.getManifest()
-			.content_scripts?.flatMap((script) => script.js ?? []) ?? [];
+	// With declared content scripts, a tab that's still loading gets one soon,
+	// and injecting now as well would leave two palettes in the page
+	if (declaredContentScripts.length && tab.status !== "complete") return false;
 
+	injectingTabIds.add(tabId);
 	try {
-		await chrome.scripting.executeScript({ target: { tabId: tab.id }, files });
+		const files = await getContentScriptFiles();
+		await chrome.scripting.executeScript({ target: { tabId }, files });
+
+		for (let attempt = 0; attempt < INJECT_MAX_RETRIES; attempt++) {
+			if (await sendToggleMessage(tabId, type)) return true;
+			await new Promise((resolve) => setTimeout(resolve, INJECT_RETRY_MS));
+		}
+		return false;
 	} catch {
 		// Browser pages, the web store, etc. can't be scripted
 		return false;
+	} finally {
+		injectingTabIds.delete(tabId);
 	}
-
-	for (let attempt = 0; attempt < INJECT_MAX_RETRIES; attempt++) {
-		if (await sendToggleMessage(tab.id, type)) return true;
-		await new Promise((resolve) => setTimeout(resolve, INJECT_RETRY_MS));
-	}
-	return false;
 };
 
 // Our new tab page is an extension page, which content script messages
@@ -124,12 +143,12 @@ const togglePalette = async (type: string) => {
 	await openPaletteWindow();
 };
 
-chrome.commands.onCommand.addListener((command) => {
-	chrome.storage.local.set({
-		lastCommand: command,
-		lastCommandTime: new Date().toISOString(),
-	});
+// The toolbar button does the same as the shortcut
+chrome.action.onClicked.addListener(() => {
+	togglePalette(SHORTCUT_EVENTS.OPEN_PALETTE.type);
+});
 
+chrome.commands.onCommand.addListener((command) => {
 	const event = Object.values(SHORTCUT_EVENTS).find(
 		(event) => event.command === command,
 	);

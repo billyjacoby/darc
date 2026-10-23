@@ -16,7 +16,7 @@ import { useTheme } from "./use-theme";
 const browserActions = createBrowserActions();
 
 export const useActions = () => {
-	const { data: history, refetch: refetchHistory } = useHistory();
+	const { data: history } = useHistory();
 	const { data: tabs } = useActiveTabs();
 	const { theme, toggleTheme } = useTheme();
 	const { resetPosition } = usePalettePosition();
@@ -26,7 +26,7 @@ export const useActions = () => {
 	const positionActions = createPositionActions(resetPosition);
 
 	const actions = useMemo(() => {
-		const historyActions = createHistoryActions(history, refetchHistory);
+		const historyActions = createHistoryActions(history);
 		const tabActions = createTabActions(tabs);
 		const pageActions = hasCurrentUrl ? createPageActions(getCurrentUrl) : [];
 
@@ -41,7 +41,6 @@ export const useActions = () => {
 	}, [
 		tabs,
 		history,
-		refetchHistory,
 		hasCurrentUrl,
 		getCurrentUrl,
 		themeActions,

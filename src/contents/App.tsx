@@ -60,9 +60,9 @@ function App({ openOnMount }: AppProps) {
 	useEffect(() => {
 		// Listen for messages from the background script
 		const handleMessage = (
-			message: any,
+			message: { type?: string; tabId?: number },
 			_sender: chrome.runtime.MessageSender,
-			_sendResponse: (response?: any) => void,
+			_sendResponse: (response?: unknown) => void,
 		) => {
 			// Messages broadcast to extension pages name the tab they're for
 			if (message.tabId !== undefined && message.tabId !== tabIdRef.current) {
