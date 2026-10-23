@@ -1,3 +1,4 @@
+import "~utils/disable-logs";
 // TODO: Do we want/need a popup?
 import { useState } from "react";
 

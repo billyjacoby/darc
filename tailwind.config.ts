@@ -12,6 +12,16 @@ export default {
 			},
 		},
 		extend: {
+			// Scale from --darc-font-size instead of rem, since rem in a content
+			// script is relative to the host page's root font size
+			fontSize: {
+				xs: ["calc(var(--darc-font-size) * 0.75)", { lineHeight: "1.333" }],
+				sm: ["calc(var(--darc-font-size) * 0.875)", { lineHeight: "1.429" }],
+				base: ["var(--darc-font-size)", { lineHeight: "1.5" }],
+				lg: ["calc(var(--darc-font-size) * 1.125)", { lineHeight: "1.556" }],
+				xl: ["calc(var(--darc-font-size) * 1.25)", { lineHeight: "1.4" }],
+				"2xl": ["calc(var(--darc-font-size) * 1.5)", { lineHeight: "1.333" }],
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

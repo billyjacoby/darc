@@ -7,6 +7,8 @@
 	"scripts": {
 		"dev": "dotenv -e .env -- plasmo dev",
 		"build": "dotenv -e .env -- plasmo build",
+		"build:firefox": "dotenv -e .env -- plasmo build --target=firefox-mv2",
+		"build:safari": "dotenv -e .env -- plasmo build --target=safari-mv3",
 		"package": "dotenv -e .env -- plasmo package",
 		"type-check": "tsc --noEmit",
 		"lint": "biome check"
@@ -37,6 +39,11 @@
 		"typescript": "5.3.3"
 	},
 	"manifest": {
+		"browser_specific_settings": {
+			"gecko": {
+				"id": "darc@billyjacoby.dev"
+			}
+		},
 		"key": "$CRX_KEY",
 		"host_permissions": [
 			"https://*/*"
@@ -45,7 +52,11 @@
 			"tabs",
 			"commands",
 			"storage",
-			"history"
+			"history",
+			"topSites",
+			"scripting",
+			"activeTab",
+			"bookmarks"
 		],
 		"commands": {
 			"open_palette": {
