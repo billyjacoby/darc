@@ -1,5 +1,6 @@
 import { sendToBackground } from "@plasmohq/messaging";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import type {
 	DomainSuggestionsRequestBody,
 	DomainSuggestionsResponseBody,
@@ -28,12 +29,18 @@ export function useDomainSuggestions(input: string) {
 		placeholderData: keepPreviousData,
 	});
 
-	// Placeholder data belongs to an older query, so drop entries that no longer match
-	const suggestions = query
-		? (result.data ?? []).filter((suggestion) =>
-				suggestion.domain.startsWith(query),
-			)
-		: [];
+	// Placeholder data belongs to an older query, so drop entries that no longer match.
+	// Memoized so re-renders (e.g. arrowing through results) don't produce a new
+	// array, which would re-register actions and reset kbar's active row.
+	const suggestions = useMemo(
+		() =>
+			query
+				? (result.data ?? []).filter((suggestion) =>
+						suggestion.domain.startsWith(query),
+					)
+				: [],
+		[query, result.data],
+	);
 
 	return { ...result, suggestions };
 }

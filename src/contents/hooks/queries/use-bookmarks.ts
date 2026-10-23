@@ -1,5 +1,6 @@
 import { sendToBackground } from "@plasmohq/messaging";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import type {
 	BookmarksRequestBody,
 	BookmarksResponseBody,
@@ -27,14 +28,20 @@ export function useBookmarks(input: string) {
 		placeholderData: keepPreviousData,
 	});
 
-	// Placeholder data belongs to an older query, so drop entries that no longer match
-	const bookmarks = query
-		? (result.data ?? []).filter(
-				(bookmark) =>
-					bookmark.title.toLowerCase().includes(query) ||
-					bookmark.url.toLowerCase().includes(query),
-			)
-		: [];
+	// Placeholder data belongs to an older query, so drop entries that no longer match.
+	// Memoized so re-renders (e.g. arrowing through results) don't produce a new
+	// array, which would re-register actions and reset kbar's active row.
+	const bookmarks = useMemo(
+		() =>
+			query
+				? (result.data ?? []).filter(
+						(bookmark) =>
+							bookmark.title.toLowerCase().includes(query) ||
+							bookmark.url.toLowerCase().includes(query),
+					)
+				: [],
+		[query, result.data],
+	);
 
 	return { ...result, bookmarks };
 }
